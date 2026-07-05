@@ -11,11 +11,26 @@ class Level(str, Enum):
     HIGH = "alta"
 
 
+class Project(str, Enum):
+    WORK = "trabalho"
+    NEW_BRAND = "marca_nova"
+    SITE_UPDATE = "atualizacao_site"
+    PERSONAL = "pessoal"
+
+
+class TaskSource(str, Enum):
+    INBOX = "entrada"
+    TEAM = "equipe"
+
+
 class TaskCreate(BaseModel):
     name: str = Field(..., min_length=3, max_length=120)
+    description: str = Field(..., min_length=10, max_length=500)
     due_date: date
     difficulty: Level
     importance: Level
+    project: Project = Project.PERSONAL
+    source: TaskSource = TaskSource.INBOX
 
 
 class StoredTask(TaskCreate):

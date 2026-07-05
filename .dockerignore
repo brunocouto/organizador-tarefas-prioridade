@@ -1,6 +1,8 @@
 node_modules
 dist
+imgem
 .venv
+.git
 __pycache__
 .pytest_cache
 *.pyc

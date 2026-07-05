@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 dist
+imgem
 __pycache__
 .pytest_cache
 .venv

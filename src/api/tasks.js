@@ -26,3 +26,10 @@ export function createTask(payload) {
     method: 'POST',
   })
 }
+
+export function updateTask(id, payload) {
+  return request(`/api/tasks/${id}`, {
+    body: JSON.stringify(payload),
+    method: 'PUT',
+  })
+}

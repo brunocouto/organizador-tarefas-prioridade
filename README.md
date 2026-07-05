@@ -11,13 +11,13 @@ Aplicacao prototipo para a avaliacao intermediaria de IA Generativa.
 
 ## Escopo
 
-O sistema permite cadastrar tarefas com nome, prazo, dificuldade e importancia. A aplicacao lista as tarefas e mostra um painel com a ordem de prioridade sugerida.
+O sistema permite cadastrar tarefas com nome, descricao, projeto, origem, prazo, dificuldade e importancia. A aplicacao lista as tarefas, filtra por visoes laterais e mostra um painel com a ordem de prioridade sugerida.
 
 Nao ha integracao com LLM nesta versao. A priorizacao e simulada por regra no backend para representar o ponto em que um LLM poderia ser integrado futuramente.
 
 ## Problema e solucao proposta
 
-O problema escolhido foi a organizacao de tarefas quando existem prazos, dificuldade e niveis diferentes de importancia. A solucao proposta e um painel simples que recebe as tarefas e calcula uma ordem sugerida para execucao.
+O problema escolhido foi a organizacao de tarefas quando existem prazos, dificuldade, projetos, origem e niveis diferentes de importancia. A solucao proposta e um painel no estilo Todoist que recebe as tarefas, permite editar os dados e calcula uma ordem sugerida para execucao.
 
 No futuro, um LLM poderia substituir a regra simulada para interpretar descricoes mais completas, sugerir subtarefas e explicar melhor a prioridade. Nesta entrega, isso nao foi implementado porque o enunciado pede prototipo sem modelo de IA real.
 
@@ -30,7 +30,7 @@ No futuro, um LLM poderia substituir a regra simulada para interpretar descricoe
 
 ## Escolhas de design
 
-A aplicacao foi separada em frontend e backend porque essa foi a arquitetura recomendada no enunciado. O frontend concentra a interface de cadastro, lista e painel. O backend concentra a regra simulada de priorizacao e o armazenamento em memoria.
+A aplicacao foi separada em frontend e backend porque essa foi a arquitetura recomendada no enunciado. O frontend concentra a interface de cadastro, edicao, lista, filtros e painel. O backend concentra a regra simulada de priorizacao, a edicao de tarefas e o armazenamento em memoria.
 
 O armazenamento em memoria foi escolhido para manter o prototipo simples. Os dados somem quando o servidor reinicia, mas isso atende ao objetivo desta etapa: demonstrar interface e estrutura sem criar uma solucao de producao.
 
@@ -51,6 +51,9 @@ Se a porta `8000` estiver ocupada, o comando usa a proxima porta livre e mostra 
 ## Funcionalidades
 
 - Cadastro de tarefa
+- Descricao detalhada da tarefa
+- Edicao de tarefa cadastrada
+- Filtros por caixa de entrada, equipe, hoje, importante e projetos
 - Lista de tarefas cadastradas
 - Painel de prioridades
 - Priorizacao simulada

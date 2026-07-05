@@ -1,21 +1,29 @@
-import { Plus } from 'lucide-react'
-import { useState } from 'react'
+import { Plus, Save, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 function getToday() {
   return new Date().toISOString().slice(0, 10)
 }
 
-function getInitialForm() {
+function getInitialForm(task) {
   return {
-    difficulty: 'media',
-    due_date: getToday(),
-    importance: 'media',
-    name: '',
+    description: task?.description ?? '',
+    difficulty: task?.difficulty ?? 'media',
+    due_date: task?.due_date ?? getToday(),
+    importance: task?.importance ?? 'media',
+    name: task?.name ?? '',
+    project: task?.project ?? 'pessoal',
+    source: task?.source ?? 'entrada',
   }
 }
 
-export function TaskForm({ isSaving, onCreateTask }) {
-  const [form, setForm] = useState(getInitialForm)
+export function TaskForm({ isSaving, onCancelEdit, onCreateTask, onUpdateTask, taskToEdit }) {
+  const isEditing = Boolean(taskToEdit)
+  const [form, setForm] = useState(() => getInitialForm(taskToEdit))
+
+  useEffect(() => {
+    setForm(getInitialForm(taskToEdit))
+  }, [taskToEdit])
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -28,16 +36,36 @@ export function TaskForm({ isSaving, onCreateTask }) {
   async function handleSubmit(event) {
     event.preventDefault()
 
-    await onCreateTask({
+    const payload = {
       ...form,
+      description: form.description.trim(),
       name: form.name.trim(),
-    })
+    }
 
+    if (isEditing) {
+      await onUpdateTask(taskToEdit.id, payload)
+      return
+    }
+
+    await onCreateTask(payload)
     setForm(getInitialForm())
   }
 
   return (
     <form className="task-form" onSubmit={handleSubmit}>
+      <div className="form-header">
+        <div>
+          <h1>{isEditing ? 'Editar tarefa' : 'Criar tarefa'}</h1>
+          <p>{isEditing ? 'Altere os dados e salve a tarefa.' : 'Cadastre a tarefa com projeto e origem.'}</p>
+        </div>
+        {isEditing && (
+          <button className="ghost-action" onClick={onCancelEdit} type="button">
+            <X size={17} strokeWidth={2.2} />
+            <span>Cancelar</span>
+          </button>
+        )}
+      </div>
+
       <label>
         <span>Nome da tarefa</span>
         <input
@@ -51,7 +79,38 @@ export function TaskForm({ isSaving, onCreateTask }) {
         />
       </label>
 
+      <label>
+        <span>O que e a tarefa</span>
+        <textarea
+          minLength={10}
+          name="description"
+          onChange={handleChange}
+          placeholder="Ex: revisar o texto, corrigir erros e conferir se esta pronto para entrega"
+          required
+          rows={4}
+          value={form.description}
+        />
+      </label>
+
       <div className="form-grid">
+        <label>
+          <span>Projeto</span>
+          <select name="project" onChange={handleChange} value={form.project}>
+            <option value="trabalho">Trabalho</option>
+            <option value="marca_nova">Marca nova</option>
+            <option value="atualizacao_site">Atualizacao do site</option>
+            <option value="pessoal">Pessoal</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Origem</span>
+          <select name="source" onChange={handleChange} value={form.source}>
+            <option value="entrada">Caixa de entrada</option>
+            <option value="equipe">Caixa da equipe</option>
+          </select>
+        </label>
+
         <label>
           <span>Prazo</span>
           <input
@@ -83,8 +142,8 @@ export function TaskForm({ isSaving, onCreateTask }) {
       </div>
 
       <button className="primary-action" disabled={isSaving} type="submit">
-        <Plus size={18} strokeWidth={2.2} />
-        <span>{isSaving ? 'Salvando' : 'Cadastrar tarefa'}</span>
+        {isEditing ? <Save size={18} strokeWidth={2.2} /> : <Plus size={18} strokeWidth={2.2} />}
+        <span>{isSaving ? 'Salvando' : isEditing ? 'Salvar alteracoes' : 'Cadastrar tarefa'}</span>
       </button>
     </form>
   )
